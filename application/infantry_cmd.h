@@ -96,12 +96,17 @@ struct cmd_gimbal_info
   int16_t pitch_rate;
 };
 
+struct cmd_gimbal_mode
+{
+	uint8_t mode; //1 gyro; 0 encode
+};
+
 struct cmd_gimbal_angle
 {
   union{
     uint8_t flag;
     struct{
-        uint8_t yaw_mode:1;  // 0 code angle
+        uint8_t yaw_mode:1;  // 0 absolute angle; 1 relative
         uint8_t pitch_mode:1;
     }bit;
   } ctrl;

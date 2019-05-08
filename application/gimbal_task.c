@@ -112,14 +112,19 @@ void gimbal_task(void const *argument)
       }
     }
 
-    if (rc_device_get_state(prc_dev, RC_S2_DOWN2MID) == RM_OK)
+		if (rc_device_get_state(prc_dev, RC_S2_DOWN2MID) == RM_OK)
     {
       gimbal_set_yaw_angle(pgimbal, 0, 0);
     }
 
-    if (rc_device_get_state(prc_dev, RC_S2_DOWN) == RM_OK)
+    if (rc_device_get_state(prc_dev, RC_S2_MID2DOWN) == RM_OK)
     {
       gimbal_set_yaw_mode(pgimbal, ENCODER_MODE);
+    }
+
+    if (rc_device_get_state(prc_dev, RC_S2_DOWN) == RM_OK)
+    {
+
     }
 
     if (get_offline_state() == 0)

@@ -46,6 +46,7 @@ struct manifold_cmd *get_manifold_cmd(void)
   return &manifold_cmd;
 }
 
+int32_t gimbal_mode_set(uint8_t *buff, uint16_t len);
 int32_t gimbal_info_rcv(uint8_t *buff, uint16_t len);
 int32_t chassis_speed_ctrl(uint8_t *buff, uint16_t len);
 int32_t chassis_spd_acc_ctrl(uint8_t *buff, uint16_t len);
@@ -96,6 +97,7 @@ void infantry_cmd_task(void const *argument)
     protocol_rcv_cmd_register(CMD_SET_FRICTION_SPEED, shoot_firction_ctrl);
     protocol_rcv_cmd_register(CMD_SET_SHOOT_FREQUENTCY, shoot_ctrl);
     protocol_rcv_cmd_register(CMD_GIMBAL_ADJUST, gimbal_adjust_cmd);
+	  protocol_rcv_cmd_register(CMD_SET_GIMBAL_MODE, gimbal_mode_set);
   }
 
   while (1)
@@ -201,6 +203,27 @@ int32_t chassis_spd_acc_ctrl(uint8_t *buff, uint16_t len)
   {
     memcpy(&manifold_cmd.chassis_spd_acc, buff, len);
     osSignalSet(cmd_task_t, MANIFOLD2_CHASSIS_ACC_SIGNAL);
+  }
+  return 0;
+}
+
+int32_t gimbal_mode_set(uint8_t *buff, uint16_t len)
+{
+  if (len == sizeof(struct cmd_gimbal_mode))
+  {
+	  gimbal_t pgimbal = NULL;
+    pgimbal = gimbal_find("gimbal");
+		if(pgimbal != NULL)
+		{
+			if(buff[0] == GYRO_MODE)
+			{
+				gimbal_set_yaw_mode(pgimbal, GYRO_MODE);
+			}
+			else if(buff[0] == ENCODER_MODE)
+			{
+				gimbal_set_yaw_mode(pgimbal, ENCODER_MODE);
+			}
+		}
   }
   return 0;
 }
