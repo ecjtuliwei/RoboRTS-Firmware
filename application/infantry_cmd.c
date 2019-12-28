@@ -274,7 +274,8 @@ int32_t chassis_push_info(void *argc)
   chassis_t pchassis = (chassis_t)argc;
   chassis_get_info(pchassis, &info);
 
-  cmd_chassis_info.angle_deg = info.angle_deg * 10;
+	cmd_chassis_info.angle_deg =10;
+  //cmd_chassis_info.angle_deg = info.angle_deg * 10;
   cmd_chassis_info.gyro_angle = info.yaw_gyro_angle * 10;
   cmd_chassis_info.gyro_palstance = info.yaw_gyro_rate * 10;
   cmd_chassis_info.position_x_mm = info.position_x_mm;

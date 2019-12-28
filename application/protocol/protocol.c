@@ -20,7 +20,7 @@
 #include "protocol_transmit.h"
 #include "protocol_cfg.h"
 #include "protocol_log.h"
-
+#include "board.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -243,6 +243,8 @@ uint32_t protocol_send(uint8_t reciver, uint16_t cmd, void *p_data, uint32_t dat
       protocol_release_session(int_obj, session);
     }
   }
+	// 测试发送正常帧 响三声
+	beep_set_times(3);
   return status;
 }
 
@@ -329,6 +331,8 @@ uint32_t protocol_unpack_flush(void)
   */
 uint32_t protocol_rcv_data(void *p_data, uint32_t data_len, struct perph_interface *perph)
 {
+	
+	
   FIFO_CPU_SR_TYPE cpu_sr;
   struct perph_interface *obj;
   uint32_t rcv_length;
@@ -361,6 +365,10 @@ uint32_t protocol_rcv_data(void *p_data, uint32_t data_len, struct perph_interfa
   }
   //Interrupt On
   FIFO_RESTORE_CPU_SR(cpu_sr);
+	// 测试接受数据 测试成功 能接受心跳包
+	 //beep_set_times(2);
+	//LED_R_ON();
+	//LED_R_OFF();
   return status;
 }
 
