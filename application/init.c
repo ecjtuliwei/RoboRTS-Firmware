@@ -72,7 +72,8 @@ void hw_init(void)
   usart3_rx_callback_register(referee_uart_rx_data_handle);
   referee_send_data_register(usart3_transmit);
 
-  if(glb_sys_cfg == CHASSIS_APP)
+  //if(glb_sys_cfg == CHASSIS_APP)
+	if(1)
   {
     rc_device_register(&rc_dev, "uart_rc", 0);
     dr16_forword_callback_register(rc_data_forword_by_can);
@@ -91,7 +92,7 @@ void hw_init(void)
     shoot_disable(&shoot);
   }
 
-  offline_init();
+  //offline_init();
 }
 
 osThreadId timer_task_t;
@@ -115,7 +116,8 @@ void task_init(void)
   osThreadDef(CMD_TASK, infantry_cmd_task, osPriorityNormal, 0, 4096);
   cmd_task_t = osThreadCreate(osThread(CMD_TASK), NULL);
   
-  if (app == CHASSIS_APP)
+  //if (app == CHASSIS_APP)
+	if(1)
   {
     osThreadDef(CHASSIS_TASK, chassis_task, osPriorityRealtime, 0, 512);
     chassis_task_t = osThreadCreate(osThread(CHASSIS_TASK), NULL);

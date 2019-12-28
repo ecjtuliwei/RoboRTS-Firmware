@@ -48,7 +48,8 @@ void chassis_task(void const *argument)
 
   while (1)
   {
-    if (rc_device_get_state(prc_dev, RC_S2_DOWN) != RM_OK)
+    //if (rc_device_get_state(prc_dev, RC_S2_DOWN) != RM_OK)
+		if(0)
     {
       if (rc_device_get_state(prc_dev, RC_S2_UP) == RM_OK)
       {
@@ -80,7 +81,7 @@ void chassis_task(void const *argument)
 
       chassis_set_acc(pchassis, 0, 0, 0);
     }
-
+		chassis_set_speed(pchassis, 100, 1, 0);
     chassis_execute(pchassis);
     osDelayUntil(&period, 2);
   }

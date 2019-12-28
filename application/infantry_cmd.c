@@ -100,7 +100,8 @@ void infantry_cmd_task(void const *argument)
 
   while (1)
   {
-    if (rc_device_get_state(prc_dev, RC_S2_DOWN) != RM_OK)
+    //if (rc_device_get_state(prc_dev, RC_S2_DOWN) != RM_OK)
+		if(1)
     {
       memset(&manifold_cmd, 0, sizeof(struct manifold_cmd));
       osDelay(100);
