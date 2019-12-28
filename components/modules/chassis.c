@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "chassis.h"
+#include "board.h"
  
 static int32_t motor_pid_input_convert(struct controller *ctrl, void *input);
 
@@ -149,6 +150,8 @@ int32_t chassis_gyro_updata(struct chassis *chassis, float yaw_angle, float yaw_
 
 int32_t chassis_set_speed(struct chassis *chassis, float vx, float vy, float vw)
 {
+	// 测试数据下行 PC-> 底盘 成功
+	//beep_set_times(5);
   if (chassis == NULL)
     return -RM_INVAL;
   chassis->mecanum.speed.vx = vx;

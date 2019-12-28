@@ -280,9 +280,10 @@ int32_t chassis_push_info(void *argc)
   cmd_chassis_info.gyro_palstance = info.yaw_gyro_rate * 10;
   cmd_chassis_info.position_x_mm = info.position_x_mm;
   cmd_chassis_info.position_y_mm = info.position_y_mm;
-  cmd_chassis_info.v_x_mm = info.v_x_mm;
-  cmd_chassis_info.v_y_mm = info.v_y_mm;
-
+//  cmd_chassis_info.v_x_mm = info.v_x_mm;
+//  cmd_chassis_info.v_y_mm = info.v_y_mm;
+	cmd_chassis_info.v_x_mm =10;
+  cmd_chassis_info.v_y_mm = 6;
   protocol_send(MANIFOLD2_ADDRESS, CMD_PUSH_CHASSIS_INFO, &cmd_chassis_info, sizeof(cmd_chassis_info));
 
   return 0;

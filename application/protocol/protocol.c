@@ -244,7 +244,7 @@ uint32_t protocol_send(uint8_t reciver, uint16_t cmd, void *p_data, uint32_t dat
     }
   }
 	// 测试发送正常帧 响三声
-	beep_set_times(3);
+	// beep_set_times(3);
   return status;
 }
 
