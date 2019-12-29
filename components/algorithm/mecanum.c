@@ -41,32 +41,35 @@
 
 /**
   * @brief mecanum glb_chassis velocity decomposition.F:forword; B:backword; L:left; R:right
+	* by rzf  麦克纳姆氏菌底盘速度分解。 V：向后； L：左； R：对 
+	* 输入为 ccx，ccy，ccw x y w 的加速度 输出是四个轮子 的 rpm 有点像运动学解算了
   * @param input : ccx=+vx(mm/s)  ccy=+vy(mm/s)  ccw=+vw(deg/s)
   *        output: every wheel speed(rpm)
-  * @note  1=FR 2=FL 3=BL 4=BR
+  * @note  1=FR 2=FL 3=BL 4=BR 定义四个轮子的位置代码
   */
 void mecanum_calculate(struct mecanum *mec)
 {
+	/* by rzf    static 变量一直存在静态数据区域 不随函数调用生命周期结束而销毁（不在函数调用栈上）*/
   static float rotate_ratio_fr;
   static float rotate_ratio_fl;
   static float rotate_ratio_bl;
   static float rotate_ratio_br;
   static float wheel_rpm_ratio;
-
+	/* by rzf 速度和加速度都是基于底盘的中心  解算速度的时候要把速度分解到四个电机上面 所以要指导四个电机对于底盘中心 的偏移量  */
   rotate_ratio_fr = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f - mec->param.rotate_x_offset + mec->param.rotate_y_offset) / RADIAN_COEF;
   rotate_ratio_fl = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f - mec->param.rotate_x_offset - mec->param.rotate_y_offset) / RADIAN_COEF;
   rotate_ratio_bl = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f + mec->param.rotate_x_offset - mec->param.rotate_y_offset) / RADIAN_COEF;
   rotate_ratio_br = ((mec->param.wheelbase + mec->param.wheeltrack) / 2.0f + mec->param.rotate_x_offset + mec->param.rotate_y_offset) / RADIAN_COEF;
-
+	/* by rzf  车轮转速比 电机的rpm 转换成轮子的转动速度  */
   wheel_rpm_ratio = 60.0f / (mec->param.wheel_perimeter * MOTOR_DECELE_RATIO);
-
+	/* by rzf  先判断下速度不要超过  不要超过最大速度 */
   MEC_VAL_LIMIT(mec->speed.vx, -MAX_CHASSIS_VX_SPEED, MAX_CHASSIS_VX_SPEED); //mm/s
   MEC_VAL_LIMIT(mec->speed.vy, -MAX_CHASSIS_VY_SPEED, MAX_CHASSIS_VY_SPEED); //mm/s
   MEC_VAL_LIMIT(mec->speed.vw, -MAX_CHASSIS_VW_SPEED, MAX_CHASSIS_VW_SPEED); //deg/s
 
   float wheel_rpm[4];
   float max = 0;
-
+	/* by rzf    1=FR 2=FL 3=BL 4=BR 定义四个轮子的位置代码 */
   wheel_rpm[0] = (-mec->speed.vx - mec->speed.vy - mec->speed.vw * rotate_ratio_fr) * wheel_rpm_ratio;
   wheel_rpm[1] = (mec->speed.vx - mec->speed.vy - mec->speed.vw * rotate_ratio_fl) * wheel_rpm_ratio;
   wheel_rpm[2] = (mec->speed.vx + mec->speed.vy - mec->speed.vw * rotate_ratio_bl) * wheel_rpm_ratio;
@@ -78,7 +81,7 @@ void mecanum_calculate(struct mecanum *mec)
     if (fabs(wheel_rpm[i]) > max)
       max = fabs(wheel_rpm[i]);
   }
-
+/* by rzf   找到最大值后 如果最大速度大于 MAX_WHEEL_RPM 计算比例系数 让四个电机的转速成比例的增加 等比例 */
   //equal proportion
   if (max > MAX_WHEEL_RPM)
   {
@@ -86,9 +89,10 @@ void mecanum_calculate(struct mecanum *mec)
     for (uint8_t i = 0; i < 4; i++)
       wheel_rpm[i] *= rate;
   }
+	/* by rzf   内存值拷贝函数 */
   memcpy(mec->wheel_rpm, wheel_rpm, 4 * sizeof(float));
 }
-
+/* by rzf 给底盘四个电机 上电之后调用这个函数来更新电机的编码器的测量信息  */
 void mecanum_position_measure(struct mecanum *mec, struct mecanum_motor_fdb wheel_fdb[])
 {
   static float rotate_ratio_fr;
@@ -116,6 +120,7 @@ void mecanum_position_measure(struct mecanum *mec, struct mecanum_motor_fdb whee
   last_d_x = d_x;
   last_d_y = d_y;
   last_d_w = d_w;
+	/* by rzf   四个轮子的编码器数值合成 底盘中心的速度 */
   d_x = ecd_ratio * (-wheel_fdb[0].total_ecd + wheel_fdb[1].total_ecd + wheel_fdb[2].total_ecd - wheel_fdb[3].total_ecd);
   d_y = ecd_ratio * (-wheel_fdb[0].total_ecd - wheel_fdb[1].total_ecd + wheel_fdb[2].total_ecd + wheel_fdb[3].total_ecd);
   d_w = ecd_ratio * (-wheel_fdb[0].total_ecd / rotate_ratio_fr - wheel_fdb[1].total_ecd / rotate_ratio_fl - wheel_fdb[2].total_ecd / rotate_ratio_bl - wheel_fdb[3].total_ecd / rotate_ratio_br);

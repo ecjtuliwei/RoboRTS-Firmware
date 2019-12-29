@@ -106,7 +106,7 @@ int32_t chassis_execute(struct chassis *chassis)
   if(!init_f)
   {
     period = 0;
-		last_time = get_time_ms_us();
+	last_time = get_time_ms_us();
     init_f = 1;
   }
   else
@@ -119,11 +119,13 @@ int32_t chassis_execute(struct chassis *chassis)
   }
   
   mecanum_calculate(&(chassis->mecanum));
-
+  
   for (int i = 0; i < 4; i++)
   {
+	  /* by rzf 获取到编码器的数值
+	  先给了 pdata指针指向的变量 再赋值给 wheel_fdb[i].total_ecd  wheel_fdb[i].speed_rpm  这两个*/
     pdata = motor_device_get_data(&(chassis->motor[i]));
-
+	
     wheel_fdb[i].total_ecd = pdata->total_ecd;
     wheel_fdb[i].speed_rpm = pdata->speed_rpm;
 

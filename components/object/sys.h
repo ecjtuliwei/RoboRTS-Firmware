@@ -51,7 +51,7 @@
 #endif
 
 /* math relevant */
-/* radian coefficient */
+/* radian coefficient 弧度系数 */
 #ifndef RADIAN_COEF
   #define RADIAN_COEF 57.3f
 #endif
