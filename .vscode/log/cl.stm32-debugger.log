@@ -1,0 +1,8 @@
+[cl.stm32-debugger] : [F1D1A55D-8F8F-3182-3BD5-04D4C44EDB8A] : log at : 2019/12/29|11:08:34|GMT+0800
+
+
+[Error] : "{\"name\":\"Error\",\"message\":\"socket hang up\",\"stack\":\"Error: socket hang up\\n\\tat connResetException (internal/errors.js:559:14)\\n\\tat Socket.socketOnEnd (_http_client.js:436:23)\\n\\tat Socket.emit (events.js:205:15)\\n\\tat endReadableNT (_stream_readable.js:1154:12)\\n\\tat processTicksAndRejections (internal/process/task_queues.js:84:9)\"}"
+[cl.stm32-debugger] : [F1D1A55D-8F8F-3182-3BD5-04D4C44EDB8A] : log at : 2019/12/29|11:51:46|GMT+0800
+
+
+[Error] : "{\"name\":\"Error\",\"message\":\"socket hang up\",\"stack\":\"Error: socket hang up\\n\\tat connResetException (internal/errors.js:559:14)\\n\\tat Socket.socketOnEnd (_http_client.js:436:23)\\n\\tat Socket.emit (events.js:205:15)\\n\\tat endReadableNT (_stream_readable.js:1154:12)\\n\\tat processTicksAndRejections (internal/process/task_queues.js:84:9)\"}"

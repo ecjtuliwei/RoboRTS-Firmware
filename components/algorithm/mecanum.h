@@ -26,16 +26,16 @@
 
 /************************ chassis parameter ****************************/
 /* the radius of wheel(mm) 轮子半径*/
-#define RADIUS 76
+#define RADIUS 105
 /* the perimeter of wheel(mm) 轮子周长 */
-#define PERIMETER 478
+#define PERIMETER 660
 /* wheel track distance(mm) 轮距 */
-#define WHEELTRACK 394
+#define WHEELTRACK 420
 /* wheelbase distance(mm) 轴距 */
 #define WHEELBASE 415
 
 /* gimbal is relative to chassis center x axis offset(mm) 坐标变换信息 云台相对底盘中心的x轴向距离*/
-#define ROTATE_X_OFFSET 7
+#define ROTATE_X_OFFSET 0
 /* gimbal is relative to chassis center y axis offset(mm) 坐标变换信息 云台相对底盘中心的y轴向距离 */
 #define ROTATE_Y_OFFSET 0
 
@@ -61,8 +61,8 @@ struct mecanum_structure
   float wheel_perimeter; /* the perimeter(mm) of wheel 轮子的周长（mm） */
   float wheeltrack;      /* wheel track distance(mm) 轮距（mm） */
   float wheelbase;       /* wheelbase distance(mm) 轴距（mm） */
-  float rotate_x_offset; /* rotate offset(mm) relative to the x-axis of the chassis center 云台偏移量x */
-  float rotate_y_offset; /* rotate offset(mm) relative to the y-axis of the chassis center 云台偏移量y */
+  float rotate_x_offset; /* rotate offset(mm) relative to the x-axis of the chassis center 电机偏移量x */
+  float rotate_y_offset; /* rotate offset(mm) relative to the y-axis of the chassis center 电机偏移量y */
 };
 // 麦克纳姆位置 没注释看个鬼呀
 struct mecanum_position

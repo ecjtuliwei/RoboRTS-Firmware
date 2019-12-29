@@ -42,7 +42,7 @@ void chassis_task(void const *argument)
   {
   }
 
-  soft_timer_register(chassis_push_info, (void *)pchassis, 10);
+  soft_timer_register(chassis_push_info, (void *)pchas·sis, 10);
 
   pid_struct_init(&pid_follow, MAX_CHASSIS_VW_SPEED, 50, 8.0f, 0.0f, 2.0f);
 

@@ -22,7 +22,7 @@
 
 #include "mecanum.h"
 
-#ifndef RADIAN_COEF
+#ifndef RADIAN_COEF 	//弧度系数
   #define RADIAN_COEF 57.3f
 #endif
 
@@ -41,7 +41,7 @@
 
 /**
   * @brief mecanum glb_chassis velocity decomposition.F:forword; B:backword; L:left; R:right
-	* by rzf  麦克纳姆氏菌底盘速度分解。 V：向后； L：左； R：对 
+	* by rzf  麦克纳姆底盘速度分解。 V：向后； L：左； R：对 
 	* 输入为 ccx，ccy，ccw x y w 的加速度 输出是四个轮子 的 rpm 有点像运动学解算了
   * @param input : ccx=+vx(mm/s)  ccy=+vy(mm/s)  ccw=+vw(deg/s)
   *        output: every wheel speed(rpm)
