@@ -36,3 +36,4 @@ JLinkLog.txt
 *.uvguix.*
 build/*
 !build/infantry.sct
+MDK-ARM/infantry.uvprojx

@@ -48,6 +48,7 @@ void chassis_task(void const *argument)
 
   while (1)
   {
+		//chassis_push_info((void *)pchassis);
     //if (rc_device_get_state(prc_dev, RC_S2_DOWN) != RM_OK)
 		if(0)
     {
