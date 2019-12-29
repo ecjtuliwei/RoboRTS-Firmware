@@ -19,9 +19,11 @@
 #include "board.h"
  
 static int32_t motor_pid_input_convert(struct controller *ctrl, void *input);
-
+/* by rzf   这是一个回调函数（中断处理函数） 只要事件 can1 收到信息 就会触发这个函数 计算 rpm*/
+/* by rzf  name="chassis"  */
 int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum device_can can)
 {
+	/* by rzf 四个电机    */
   char motor_name[4][OBJECT_NAME_MAX_LEN] = {0};
   uint8_t name_len;
 
@@ -47,8 +49,9 @@ int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum dev
     chassis->motor[i].can_periph = can;
     chassis->motor[i].can_id = 0x201 + i;
     chassis->motor[i].init_offset_f = 1;
-
+		/* by rzf 这里的feedback函数是什么鬼 是pid的rpm控制下去之后编码器返回的rpm？？   */
     chassis->ctrl[i].convert_feedback = motor_pid_input_convert;
+		/* by rzf  pid 初始化的一些参数 四个电机 就四个pid  */
     pid_struct_init(&chassis->motor_pid[i], 15000, 500, 6.5f, 0.1, 0);
   }
 
@@ -57,7 +60,7 @@ int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum dev
   chassis->mecanum.param.wheelbase = WHEELBASE;
   chassis->mecanum.param.rotate_x_offset = ROTATE_X_OFFSET;
   chassis->mecanum.param.rotate_y_offset = ROTATE_Y_OFFSET;
-
+  /* by rzf  四个轮子 给起个名字吧  */
   memcpy(&motor_name[0][name_len], "_FR\0", 4);
   memcpy(&motor_name[1][name_len], "_FL\0", 4);
   memcpy(&motor_name[2][name_len], "_BL\0", 4);
@@ -69,7 +72,7 @@ int32_t chassis_pid_register(struct chassis *chassis, const char *name, enum dev
     if (err != RM_OK)
       goto end;
   }
-
+	 /* by rzf  四个轮子 给起个名字吧  */
   memcpy(&motor_name[0][name_len], "_CTLFR\0", 7);
   memcpy(&motor_name[1][name_len], "_CTLFL\0", 7);
   memcpy(&motor_name[2][name_len], "_CTLBL\0", 7);
@@ -88,7 +91,8 @@ end:
 
   return err;
 }
-
+/* by rzf  底盘执行函数 传入 加速度 解算出 rpm 进行pid控制 返回执行状态   */
+/* by rzf    */
 int32_t chassis_execute(struct chassis *chassis)
 {
   float motor_out;
@@ -100,9 +104,9 @@ int32_t chassis_execute(struct chassis *chassis)
   
   if (chassis == NULL)
     return -RM_INVAL;
-  
-	period  = get_time_ms_us() - last_time;
-
+  /* by rzf 间隔   */
+ period  = get_time_ms_us() - last_time;
+  /* by rzf  init_f 是一个static 变量 所以 只有第一次为0 满足if条件进去  */
   if(!init_f)
   {
     period = 0;
@@ -112,12 +116,12 @@ int32_t chassis_execute(struct chassis *chassis)
   else
   {
     last_time = get_time_ms_us();
-
+	  /* by rzf 根据加速度计算速度 时间间隔是上次控制的控制的时间 到这次控制的时间 period  */
     chassis->mecanum.speed.vx += chassis->acc.ax/1000.0f*period;
     chassis->mecanum.speed.vy += chassis->acc.ay/1000.0f*period;
     chassis->mecanum.speed.vw += chassis->acc.wz/1000.0f*period;
   }
-  
+  /* by rzf  输入地盘中心的速度 输出 四个电机的rpm  */
   mecanum_calculate(&(chassis->mecanum));
   
   for (int i = 0; i < 4; i++)

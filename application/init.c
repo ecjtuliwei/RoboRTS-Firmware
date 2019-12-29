@@ -39,8 +39,9 @@
 #include "param.h"
 #include "offline_check.h"
 #include "referee_system.h"
-
+/* by rzf  祖师爷 之后的所有底盘信息都是从从这里开始的 内存是在这里分配的 全局变量区域  */
 struct chassis chassis;
+
 struct gimbal gimbal;
 struct shoot shoot;
 static struct rc_device rc_dev;
@@ -61,15 +62,19 @@ uint8_t get_sys_cfg(void)
 
 void hw_init(void)
 {
+	/* by rzf   云台校准 */
   cali_param_init();
+	/* by rzf 板载资源初始化   */
   board_config();
   test_init();
   system_config();
   ulog_init();
   ulog_console_backend_init();
-  
+  /* by rzf 裁判系统参数初始化   */
   referee_param_init();
+	/* by rzf  裁判系统信号的中断处理函数定义  */
   usart3_rx_callback_register(referee_uart_rx_data_handle);
+	/* by rzf   发送给裁判系统的 发送函数 ，，发送啥呀*/
   referee_send_data_register(usart3_transmit);
 
   //if(glb_sys_cfg == CHASSIS_APP)
@@ -77,7 +82,9 @@ void hw_init(void)
   {
     rc_device_register(&rc_dev, "uart_rc", 0);
     dr16_forword_callback_register(rc_data_forword_by_can);
+	/* by rzf   pid 计算回调函数 */
     chassis_pid_register(&chassis, "chassis", DEVICE_CAN1);
+		/* by rzf 四个电机控制使能   */
     chassis_disable(&chassis);
   }
   else
@@ -91,8 +98,8 @@ void hw_init(void)
     gimbal_pitch_disable(&gimbal);
     shoot_disable(&shoot);
   }
-
-  //offline_init();
+	// 其实这个掉线检测用的好的话 还是有用的
+  offline_init();
 }
 
 osThreadId timer_task_t;
