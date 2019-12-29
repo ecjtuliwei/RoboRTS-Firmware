@@ -17,7 +17,7 @@
 
 #include "errno.h"
 #include "object.h"
-
+/* by rzf   object 继承关系 */
 enum object_info_type
 {
   Object_Info_Device = 0,

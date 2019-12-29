@@ -144,22 +144,32 @@ int32_t motor_can1_output_1ms(void *argc)
 
 void board_config(void)
 {
+	/* by rzf  这些初始化都是跟端口 还有定时器 计数器 中断 串口 can硬件配置的函数    */
+	/* by rzf 软件定时器初始化   */
   soft_timer_init();
 
   usart6_manage_init();
+	/* by rzf  与裁判系统通信的串口  */
 	usart3_manage_init();
+	/* by rzf  can 设备管理初始化   */
   can_manage_init();
+	/* by rzf  pwm 初始化 没啥用吧   */
   pwm_device_init();
+	/* by rzf mpu 6050 初始化   */
   mpu_device_init();
-
+	/* by rzf 这是遥控器通信的串口吗   */
   dr16_uart_init();
   dr16_rx_uart_callback_register(dr16_rx_data_by_uart);
-
+	
+	/* by rzf  电机的定时器 1ms（不一定 软件定时器） 定时触发一次  */
   soft_timer_register(motor_can1_output_1ms, NULL, 1);
-  soft_timer_register(beep_ctrl_times, NULL, 1);  
+	/* by rzf  蜂鸣器 定时器触发  */
+  soft_timer_register(beep_ctrl_times, NULL, 1);
+	/* by rzf  led 闪烁的定时器 300ms 在调用 led_r_of的时候就应该调用了这个延时 */   
   soft_timer_register(led_toggle_300ms, NULL, 1); 
-
+	/* by rzf 电机 设备 can消息发送函数初始化   */
   motor_device_can_send_register(motor_canstd_send);
+	/* by rzf  单陀螺仪 can 发送 寄存器（函数）  */
   single_gyro_can_send_register(gyro_can_std_send);
 
   can_fifo0_rx_callback_register(&can1_manage, can1_motor_msg_rec);

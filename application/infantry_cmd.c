@@ -39,16 +39,20 @@ extern osThreadId cmd_task_t;
 
 struct cmd_gimbal_info cmd_gimbal_info;
 struct cmd_chassis_info cmd_chassis_info;
+/* by rzf  妙算给的信息  */
 struct manifold_cmd manifold_cmd;
 
 struct manifold_cmd *get_manifold_cmd(void)
 {
   return &manifold_cmd;
 }
-
+/* by rzf 妙算控制云台   */
 int32_t gimbal_info_rcv(uint8_t *buff, uint16_t len);
+/* by rzf  底盘速度控制  */
 int32_t chassis_speed_ctrl(uint8_t *buff, uint16_t len);
+/* by rzf 底盘 加速度控制   */
 int32_t chassis_spd_acc_ctrl(uint8_t *buff, uint16_t len);
+/* by rzf  下面几个都用不上 有时间再学习  */
 int32_t shoot_firction_ctrl(uint8_t *buff, uint16_t len);
 int32_t gimbal_angle_ctrl(uint8_t *buff, uint16_t len);
 int32_t shoot_ctrl(uint8_t *buff, uint16_t len);
@@ -76,7 +80,7 @@ void infantry_cmd_task(void const *argument)
   shoot_t pshoot = NULL;
   gimbal_t pgimbal = NULL;
   chassis_t pchassis = NULL;
-
+	
   pshoot = shoot_find("shoot");
   pgimbal = gimbal_find("gimbal");
   pchassis = chassis_find("chassis");
@@ -100,9 +104,10 @@ void infantry_cmd_task(void const *argument)
 
   while (1)
   {
-    //if (rc_device_get_state(prc_dev, RC_S2_DOWN) != RM_OK)
-		if(1)
+    // if (rc_device_get_state(prc_dev, RC_S2_DOWN) != RM_OK)
+		if(0) 
     {
+			// memset ：Sets the first num bytes of the block of memory pointed by ptr to the specified value
       memset(&manifold_cmd, 0, sizeof(struct manifold_cmd));
       osDelay(100);
     }

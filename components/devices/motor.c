@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "motor.h"
-
+#include "drv_io.h"
 #define MAX_MOTOR_NUM 6
 
 static void get_encoder_data(motor_device_t motor, uint8_t can_rx_data[]);
@@ -141,15 +141,19 @@ motor_device_t motor_device_find_by_canid(enum device_can can, uint16_t can_id)
 static uint8_t motor_send_flag[DEVICE_CAN_NUM][2];
 static struct can_msg motor_msg[DEVICE_CAN_NUM][2];
 
+/* by rzf   这个函数每隔1ms用软件定时器 唤醒一次 */
 int32_t motor_device_can_output(enum device_can m_can)
 {
+	// 测试 这个函数是不是1 ms调用一次
+	/* by rzf   验证成功 的却会调用 但是不能确定频率 因为 beep响需要时间 */
+	//beep_set_times(2);
   struct object *object;
   list_t *node = NULL;
   struct object_information *information;
   motor_device_t motor_dev;
 
   memset(motor_msg, 0, sizeof(motor_msg));
-
+	
   var_cpu_sr();
    
   /* enter critical */
@@ -211,12 +215,13 @@ int32_t motor_device_data_update(enum device_can can, uint16_t can_id, uint8_t c
   }
   return -RM_UNREGISTERED;
 }
-
+/* by rzf  获得编码器数值的函数 下一步解析具体如何获取编码器 的数值 以及 调用链  */
 static void get_encoder_data(motor_device_t motor, uint8_t can_rx_data[])
 {
+	/* by rzf    获得motor->data 变量的指针 编码器的数值就放在那里*/
   motor_data_t ptr = &(motor->data);
   ptr->msg_cnt++;
-
+  /* by rzf 编码器记录count 为什么查过五十就把init_offset_f置0？？   */
   if (ptr->msg_cnt > 50)
   {
     motor->init_offset_f = 0;
@@ -224,15 +229,18 @@ static void get_encoder_data(motor_device_t motor, uint8_t can_rx_data[])
 
   if (motor->init_offset_f == 1)
   {
+		/* by rzf 这里应该是和底层硬件沟通 用can获取数据 不不不  can_rx_data是函数参数传递进来的 这里影噶是解析		*/
     get_motor_offset(ptr, can_rx_data);
     return;
   }
 
   ptr->last_ecd = ptr->ecd;
+	/* by rzf    编码器赋予新的值 上面先存旧值 再存新值*/
   ptr->ecd = (uint16_t)(can_rx_data[0] << 8 | can_rx_data[1]);
 
   if (ptr->ecd - ptr->last_ecd > 4096)
   {
+		/* by rzf  超过了4096又是什么trick技巧呢？什么考量  */
     ptr->round_cnt--;
     ptr->ecd_raw_rate = ptr->ecd - ptr->last_ecd - 8192;
   }
@@ -245,12 +253,14 @@ static void get_encoder_data(motor_device_t motor, uint8_t can_rx_data[])
   {
     ptr->ecd_raw_rate = ptr->ecd - ptr->last_ecd;
   }
-
+	/* by rzf 一直出现的8192是一个特殊的硬件参数吗  比如减速比什么鬼的   */
   ptr->total_ecd = ptr->round_cnt * 8192 + ptr->ecd - ptr->offset_ecd;
   /* total angle, unit is degree */
+	/* by rzf  角度又是怎么来的 怎么用的  */
   ptr->total_angle = ptr->total_ecd / ENCODER_ANGLE_RATIO;
-
+	/* by rzf 所以最后编码器就会返回测量的rpm吗?   */
   ptr->speed_rpm = (int16_t)(can_rx_data[2] << 8 | can_rx_data[3]);
+	/* by rzf  given_current 是要求设置的rpm吗  */
   ptr->given_current = (int16_t)(can_rx_data[4] << 8 | can_rx_data[5]);
 }
 

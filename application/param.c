@@ -45,6 +45,7 @@ void save_cali_data(void)
 }
 /**
   * @brief read calibrate data cali_param from chip flash
+	// buy rzf 从芯片闪存读取校准数据cali_param 云台校准函数
   * @usage called after cali_param_init() in main() initialize part.
   */
 void cali_data_read(void)

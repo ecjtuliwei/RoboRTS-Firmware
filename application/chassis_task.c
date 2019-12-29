@@ -27,10 +27,15 @@ struct pid pid_follow = {0}; //angle control
 
 void chassis_task(void const *argument)
 {
+	/* by rzf pchassis  周期 系统时钟 */
   uint32_t period = osKernelSysTick();
-  chassis_t pchassis = NULL;
+  /* by rzf chassis 机壳 pchassis  底盘 */
+	chassis_t pchassis = NULL;
+	/* by rzf 遥控器设备   */
   rc_device_t prc_dev = NULL;
   rc_info_t prc_info = NULL;
+	/* by rzf  pchassis 底盘指针 返回的是一个转换为(chassis_t)object object应该是一层抽象 哪一层呢？？  */
+	/* by rzf  chassis_find()掉用  object_find（） */
   pchassis = chassis_find("chassis");
   prc_dev = rc_device_find("uart_rc");
 
@@ -82,7 +87,9 @@ void chassis_task(void const *argument)
 
       chassis_set_acc(pchassis, 0, 0, 0);
     }
-		chassis_set_speed(pchassis, 100, 1, 0);
+		/* by rzf  if (rc_device_get_state(prc_dev, RC_S2_MID2DOWN) == RM_OK) 这个应该是控制信息来自 妙算 的逻辑   买个遥控器？？*/
+		chassis_set_speed(pchassis, 0, 1, 0);
+		chassis_set_acc(pchassis, 0, 0, 0);
     chassis_execute(pchassis);
     osDelayUntil(&period, 2);
   }
