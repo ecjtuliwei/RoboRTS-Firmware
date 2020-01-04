@@ -32,7 +32,7 @@
 #include "shoot.h"
 #include "log_test.h"
 
-//#define TEST_SELF_ENABLE
+#define TEST_SELF_ENABLE
 
 #ifdef TEST_SELF_ENABLE
 
@@ -91,11 +91,11 @@ void test_init(void)
   // test_module_register((void *)rc_test, NULL);
 
   /*******motor controller***********/
-  // pid_struct_init(&test_pid, 10000, 500, 4.5f, 0.05, 0);
-  // test_motor_ctrl.convert_feedback = test_pid_motor_convert_input;
-  // pid_controller_register(&test_motor_ctrl, "test_ctrl", &test_pid, &test_pid_feedback, 1);
-  // motor_device_register(&test_motor, "test_motor", 0);
-  // test_module_register((void *)motor_test, NULL);
+//   pid_struct_init(&test_pid, 10000, 500, 4.5f, 0.05, 0);
+//   test_motor_ctrl.convert_feedback = test_pid_motor_convert_input;
+//   pid_controller_register(&test_motor_ctrl, "test_ctrl", &test_pid, &test_pid_feedback, 1);
+//   motor_device_register(&test_motor, "test_motor", 0);
+//   test_module_register((void *)motor_test, NULL);
 
   /*******gimbal controller***********/
   //  mpu_device_init();
@@ -106,8 +106,8 @@ void test_init(void)
   //  test_module_register((void *)gimbal_pid_test, NULL);
 
   /*******chassis controller***********/
-  //  chassis_pid_register(&test_chassis, "chassis", DEVICE_CAN1);
-  //  test_module_register((void *)chassis_test, NULL);
+//  chassis_pid_register(&test_chassis, "chassis", DEVICE_CAN1);
+//  test_module_register((void *)chassis_test, NULL);
 
   /*******limit test*******************/
   //  test_module_register((void *)limit_test, NULL);
@@ -118,13 +118,13 @@ void test_init(void)
   // test_module_register((void *)shoot_test, NULL);
   
   /*******detect test******************/
-  // detect_device_register(&test_detect, "detect", 0, 0);
-  // detect_device_add_event(&test_detect, 1, 100, test_call_fnuc1, NULL);
-  // detect_device_add_event(&test_detect, 2, 100, test_call_fnuc2, NULL);
-  // test_module_register((void *)detect_test, NULL);
+//   detect_device_register(&test_detect, "detect", 0, 0);
+//   detect_device_add_event(&test_detect, 1, 100, test_call_fnuc1, NULL);
+//   detect_device_add_event(&test_detect, 2, 100, test_call_fnuc2, NULL);
+//   test_module_register((void *)detect_test, NULL);
   
   /*******log test******************/
-  // log_test_init();
+  log_test_init();
   
   /*******cli test******************/
   
@@ -132,7 +132,7 @@ void test_init(void)
 
 int32_t test_detect_flag;
 int32_t test_detect_state1, test_detect_state2;
-uint8_t call_state1, call_state2;
+uint8_t  call_state1 ,call_state2;
 
 void detect_test(void *argc)
 {
@@ -259,10 +259,10 @@ void gimbal_test(void *argc)
   motor_device_can_output(DEVICE_CAN1);
 }
 
-int32_t yaw_angle_fdb_js, yaw_angle_ref_js;
-int32_t pit_angle_fdb_js, pit_angle_ref_js;
-int32_t yaw_spd_fdb_js, yaw_spd_ref_js;
-int32_t pit_spd_fdb_js, pit_spd_ref_js; 
+//int32_t yaw_angle_fdb_js, yaw_angle_ref_js;
+//int32_t pit_angle_fdb_js, pit_angle_ref_js;
+//int32_t yaw_spd_fdb_js, yaw_spd_ref_js;
+//int32_t pit_spd_fdb_js, pit_spd_ref_js; 
 
 float test_angle_yaw;
 float test_angle_pitch;
@@ -271,45 +271,45 @@ float test_delta_yaw;
 uint8_t test_yaw_mode;
 uint8_t test_gim_flag;
 
-void gimbal_set_inter_test(void *argc)
-{
-  if(test_gim_flag == 1)
-  {
-    gimbal_set_pitch_angle(&test_gimbal, test_angle_pitch);
-    gimbal_set_yaw_angle(&test_gimbal, test_angle_yaw, test_yaw_mode);
-    test_gim_flag = 0;
-  }
+//void gimbal_set_inter_test(void *argc)
+//{
+//  if(test_gim_flag == 1)
+//  {
+//    gimbal_set_pitch_angle(&test_gimbal, test_angle_pitch);
+//    gimbal_set_yaw_angle(&test_gimbal, test_angle_yaw, test_yaw_mode);
+//    test_gim_flag = 0;
+//  }
 
-  if(test_gim_flag == 2)
-  {
-    gimbal_set_pitch_delta(&test_gimbal, test_delta_pitch);
-    gimbal_set_yaw_delta(&test_gimbal, test_delta_yaw);
-    test_gim_flag = 0;
-  }
-  
-  if(test_gim_flag == 3)
-  {
-    gimbal_pitch_disable(&test_gimbal);
-    gimbal_yaw_disable(&test_gimbal);
-  }
-  
-  if(test_gim_flag == 4)
-  {
-    gimbal_pitch_enable(&test_gimbal);
-    gimbal_yaw_enable(&test_gimbal);
-  }
-  
-  yaw_angle_fdb_js = test_gimbal.cascade[0].outer.get * 1000;
-  yaw_angle_ref_js = test_gimbal.cascade[0].outer.set * 1000;
-  pit_angle_fdb_js = test_gimbal.cascade[1].outer.get * 1000;
-  pit_angle_ref_js = test_gimbal.cascade[1].outer.set * 1000;
+//  if(test_gim_flag == 2)
+//  {
+//    gimbal_set_pitch_delta(&test_gimbal, test_delta_pitch);
+//    gimbal_set_yaw_delta(&test_gimbal, test_delta_yaw);
+//    test_gim_flag = 0;
+//  }
+//  
+//  if(test_gim_flag == 3)
+//  {
+//    gimbal_pitch_disable(&test_gimbal);
+//    gimbal_yaw_disable(&test_gimbal);
+//  }
+//  
+//  if(test_gim_flag == 4)
+//  {
+//    gimbal_pitch_enable(&test_gimbal);
+//    gimbal_yaw_enable(&test_gimbal);
+//  }
+//  
+//  yaw_angle_fdb_js = test_gimbal.cascade[0].outer.get * 1000;
+//  yaw_angle_ref_js = test_gimbal.cascade[0].outer.set * 1000;
+//  pit_angle_fdb_js = test_gimbal.cascade[1].outer.get * 1000;
+//  pit_angle_ref_js = test_gimbal.cascade[1].outer.set * 1000;
 
-  yaw_spd_fdb_js = test_gimbal.cascade[0].inter.get * 1000;
-  yaw_spd_ref_js = test_gimbal.cascade[0].inter.set * 1000;
-  pit_spd_fdb_js = test_gimbal.cascade[1].inter.get * 1000;
-  pit_spd_ref_js = test_gimbal.cascade[1].inter.set * 1000; 
+//  yaw_spd_fdb_js = test_gimbal.cascade[0].inter.get * 1000;
+//  yaw_spd_ref_js = test_gimbal.cascade[0].inter.set * 1000;
+//  pit_spd_fdb_js = test_gimbal.cascade[1].inter.get * 1000;
+//  pit_spd_ref_js = test_gimbal.cascade[1].inter.set * 1000; 
 
-}
+//}
 
 uint8_t test_shoot_flag; 
 uint16_t test_fric_spd1, test_fric_spd2;
@@ -384,10 +384,10 @@ void motor_test(void *argc)
 
 #else
 
-void test_init(void)
-{
-
-}
+//void test_init(void)
+//{
+//		//motor_test();
+//}
 
 #endif
 

@@ -66,6 +66,7 @@ void hw_init(void)
   cali_param_init();
 	/* by rzf 板载资源初始化   */
   board_config();
+	/* by rzf   来进行测试吧 */
   test_init();
   system_config();
   ulog_init();

@@ -57,6 +57,7 @@
 #include "usb_device.h"
 #include "gpio.h"
 #include "spi.h"
+//#include "log_test.h"
 
 /* USER CODE BEGIN Includes */
 #include "init.h"
@@ -72,7 +73,6 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
-
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
@@ -125,12 +125,13 @@ int main(void)
   /* USER CODE BEGIN 2 */
   hw_init();
   task_init();
+	//log_test_init();
+//	log_test();
   /* USER CODE END 2 */
-
+		
   /* Call init function for freertos objects (in freertos.c) */
   MX_FREERTOS_Init();
-  portEXIT_CRITICAL();
-
+  portEXIT_CRITICAL();	
   /* Start scheduler */
   osKernelStart();
   
@@ -144,7 +145,6 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
   }
   /* USER CODE END 3 */
 

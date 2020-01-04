@@ -24,7 +24,7 @@ void log_test(void);
 void log_test_init(void)
 {
   ulog_init();
-//  ulog_tag_lvl_filter_set("usart6", 7);
+  ulog_tag_lvl_filter_set("usart6", 7);
   ulog_console_backend_init();
   test_module_register((void *)log_test, NULL);
 }
