@@ -19,7 +19,8 @@
 #include "chassis_task.h"
 #include "timer_task.h"
 #include "infantry_cmd.h"
-
+#include "stm32f4xx_hal_uart.h"
+#include "usart.h"
 static float vx, vy, wz;
 
 float follow_relative_angle;
@@ -47,7 +48,7 @@ void chassis_task(void const *argument)
   {
   }
 
-  soft_timer_register(chassis_push_info, (void *)pchas·sis, 10);
+  soft_timer_register(chassis_push_info, (void *)pchassis, 10);
 
   pid_struct_init(&pid_follow, MAX_CHASSIS_VW_SPEED, 50, 8.0f, 0.0f, 2.0f);
 
@@ -88,6 +89,7 @@ void chassis_task(void const *argument)
       chassis_set_acc(pchassis, 0, 0, 0);
     }
 		/* by rzf  if (rc_device_get_state(prc_dev, RC_S2_MID2DOWN) == RM_OK) 这个应该是控制信息来自 妙算 的逻辑   买个遥控器？？*/
+		//HAL_UART_Transmit(&huart6, (uint8_t *)"chassis_task\n", 13, 55);
 		chassis_set_speed(pchassis, 0, 1, 0);
 		chassis_set_acc(pchassis, 0, 0, 0);
     chassis_execute(pchassis);

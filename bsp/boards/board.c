@@ -29,7 +29,7 @@
 #include "timer_task.h"
 #include "gimbal_task.h"
 #include "offline_check.h"
-
+#include "stm32f4xx_hal_can.h"
 int32_t can1_motor_msg_rec(CAN_RxHeaderTypeDef *header, uint8_t *data)
 {
   motor_device_data_update(DEVICE_CAN1, header->StdId, data);
@@ -69,7 +69,9 @@ end:
 
 int32_t motor_canstd_send(enum device_can can, struct can_msg msg)
 {
-  if (can == DEVICE_CAN1)
+  /* by rzf test motor can   */
+	//if (can == DEVICE_CAN1)
+	if (1)
     can_msg_bytes_send(&hcan1, msg.data, 8, msg.id);
   else if (can == DEVICE_CAN2)
     can_msg_bytes_send(&hcan2, msg.data, 8, msg.id);

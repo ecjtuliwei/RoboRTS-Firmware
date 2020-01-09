@@ -17,6 +17,8 @@
 
 #include "motor.h"
 #include "drv_io.h"
+#include "stm32f4xx_hal_uart.h"
+#include "usart.h"
 #define MAX_MOTOR_NUM 6
 
 static void get_encoder_data(motor_device_t motor, uint8_t can_rx_data[]);
@@ -84,7 +86,7 @@ motor_data_t motor_device_get_data(motor_device_t motor_dev)
   }
   return NULL;
 }
-
+/* by rzf 调用can输出can帧 驱动电机   */
 int32_t motor_device_set_current(motor_device_t motor_dev, int16_t current)
 {
 
@@ -142,6 +144,7 @@ static uint8_t motor_send_flag[DEVICE_CAN_NUM][2];
 static struct can_msg motor_msg[DEVICE_CAN_NUM][2];
 
 /* by rzf   这个函数每隔1ms用软件定时器 唤醒一次 */
+/* by rzf  最后的boss  */
 int32_t motor_device_can_output(enum device_can m_can)
 {
 	// 测试 这个函数是不是1 ms调用一次
@@ -168,13 +171,21 @@ int32_t motor_device_can_output(enum device_can m_can)
   {
     object = list_entry(node, struct object, list);
     motor_dev = (motor_device_t)object;
-    if(motor_dev->parent.type == Device_Class_Motor)
+    //if(motor_dev->parent.type == Device_Class_Motor)
+		// 修改让轮子动
+		// 
+		if(1)
     {
-      if (((motor_device_t)object)->can_id < 0x205)
+      //if (((motor_device_t)object)->can_id < 0x205)
+			if(1)
       {
+				//HAL_UART_Transmit(&huart6, (uint8_t *)"motos1_task\n", 13, 55);
         motor_msg[motor_dev->can_periph][0].id = 0x200;
-        motor_msg[motor_dev->can_periph][0].data[(motor_dev->can_id - 0x201) * 2] = motor_dev->current >> 8;
-        motor_msg[motor_dev->can_periph][0].data[(motor_dev->can_id - 0x201) * 2 + 1] = motor_dev->current;
+			  motor_msg[motor_dev->can_periph][0].data[(motor_dev->can_id - 0x201) * 2] = (int16_t)(100) >> 8;
+			  motor_msg[motor_dev->can_periph][0].data[(motor_dev->can_id - 0x201) * 2 + 1] = (int16_t)(100);
+				
+				//motor_msg[motor_dev->can_periph][0].data[(motor_dev->can_id - 0x201) * 2] = motor_dev->current >> 8;
+				// motor_msg[motor_dev->can_periph][0].data[(motor_dev->can_id - 0x201) * 2 + 1] = motor_dev->current;
         motor_send_flag[motor_dev->can_periph][0] = 1;
       }
       else
@@ -194,8 +205,11 @@ int32_t motor_device_can_output(enum device_can m_can)
   {
     if (motor_send_flag[m_can][j] == 1)
     {
-      if (motor_can_send != NULL)
-        motor_can_send(m_can, motor_msg[m_can][j]);
+      if (motor_can_send != NULL){
+			//HAL_UART_Transmit(&huart6, (uint8_t *)"can_send_task\n", 13, 55);
+				motor_can_send(m_can, motor_msg[m_can][j]);
+			}
+        
       motor_send_flag[m_can][j] = 0;
     }
   }

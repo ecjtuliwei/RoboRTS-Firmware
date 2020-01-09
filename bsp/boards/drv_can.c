@@ -17,7 +17,8 @@
 
 #include "can.h"
 #include "drv_can.h"
-
+#include "stm32f4xx_hal_uart.h"
+#include "usart.h"
 struct can_manage_obj can1_manage;
 struct can_manage_obj can2_manage;
 
@@ -85,6 +86,7 @@ void can_manage_init(void)
   return;
 }
 
+/* by rzf    */
 uint32_t can_msg_bytes_send(CAN_HandleTypeDef *hcan,
                             uint8_t *data, uint16_t len, uint16_t std_id)
 {

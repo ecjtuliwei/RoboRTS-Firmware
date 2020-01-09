@@ -123,7 +123,7 @@ int32_t chassis_execute(struct chassis *chassis)
   }
   /* by rzf  输入地盘中心的速度 输出 四个电机的rpm  */
   mecanum_calculate(&(chassis->mecanum));
-  
+  motor_device_set_current(&chassis->motor[0], (int16_t)(1111));
   for (int i = 0; i < 4; i++)
   {
 	  /* by rzf 获取到编码器的数值
@@ -136,8 +136,8 @@ int32_t chassis_execute(struct chassis *chassis)
     controller_set_input(&chassis->ctrl[i], chassis->mecanum.wheel_rpm[i]);
     controller_execute(&chassis->ctrl[i], (void *)pdata);
     controller_get_output(&chassis->ctrl[i], &motor_out);
-
-    motor_device_set_current(&chassis->motor[i], (int16_t)motor_out);
+		motor_device_set_current(&chassis->motor[i], (int16_t)(111));
+    //motor_device_set_current(&chassis->motor[i], (int16_t)motor_out);
   }
 
   mecanum_position_measure(&(chassis->mecanum), wheel_fdb);

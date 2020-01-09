@@ -26,6 +26,8 @@
 #include "gimbal_task.h"
 #include "timer_task.h"
 #include "infantry_cmd.h"
+#include "stm32f4xx_hal_uart.h"
+#include "usart.h"
 
 #define BEEP_MAX_TIMES 20
 
@@ -46,6 +48,7 @@ static shoot_t pshoot = NULL;
 void offline_init(void)
 {
   uint8_t app;
+	int32_t moto_status[4] = {0};
   app = get_sys_cfg();
 
   for (int i = 0; i < BEEP_MAX_TIMES; i++)
@@ -58,16 +61,17 @@ void offline_init(void)
   pchassis = chassis_find("chassis");
 
   detect_device_register(&offline_dev, "detect", 0, 0);
-
-  detect_device_add_event(&offline_dev, RC_OFFLINE_EVENT, 100, rc_offline_callback, NULL);
+	/* by rzf  遥控器可以不要  */
+  //detect_device_add_event(&offline_dev, RC_OFFLINE_EVENT, 100, rc_offline_callback, NULL);
   detect_device_add_event(&offline_dev, GYRO_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[8]);
-
+	
   if (app == CHASSIS_APP)
   {
-    detect_device_add_event(&offline_dev, MOTOR1_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[1]);
-    detect_device_add_event(&offline_dev, MOTOR2_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[2]);
-    detect_device_add_event(&offline_dev, MOTOR3_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[3]);
-    detect_device_add_event(&offline_dev, MOTOR4_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[4]);
+		
+   moto_status[0]  = detect_device_add_event(&offline_dev, MOTOR1_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[1]);
+   moto_status[1]  =  detect_device_add_event(&offline_dev, MOTOR2_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[2]);
+//    moto_status[2]  =  detect_device_add_event(&offline_dev, MOTOR3_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[3]);
+//    moto_status[3]  =  detect_device_add_event(&offline_dev, MOTOR4_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[4]);
   }
   else
   {
@@ -75,6 +79,14 @@ void offline_init(void)
     detect_device_add_event(&offline_dev, PITCH_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[6]);
     detect_device_add_event(&offline_dev, TURN_OFFLINE_EVENT, 100, offline_beep_set_times, &offline_beep_times[7]);
   }
+//	char sta_[9] = "RM_OK + "; 
+//	for (int i=0;i < 4;i++){
+//	
+//		if(moto_status[i] == RM_OK ){
+//				sta_[8] = (char)i;
+//				HAL_UART_Transmit(&huart6, (uint8_t *)sta_, 9, 55);
+//		}
+//	}
 
   soft_timer_register(offline_check, NULL, 20);
   can_fifo0_rx_callback_register(&can1_manage, can1_detect_update);
